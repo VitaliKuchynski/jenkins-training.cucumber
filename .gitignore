@@ -13,3 +13,4 @@ test-output/
 doc/
 *.iml
 .idea/vcs.xml
+vcs.xml
