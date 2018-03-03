@@ -11,7 +11,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import ru.yandex.qatools.allure.annotations.Attachment;
+import util.ConfigDrivers;
 import util.ConfigReader;
+import util.ConfigSaucelabs;
 
 import java.net.MalformedURLException;
 
@@ -24,42 +26,30 @@ public class SharedSD {
 
     @Before
  public static void before() throws MalformedURLException {
-
+        //Instance of config reader
         ConfigReader configReader = new ConfigReader();
+        //Instance of config driver
+        ConfigDrivers configDrivers = new ConfigDrivers(configReader.getBrowser());
+        String environment = configReader.getEnvironment();
 
-        String browser = System.getProperty("BROWSER");
-        if(browser==null)
-       {
-            browser = System.getenv("BROWSER");
-            if(browser==null)
-            {
-                browser= "chrome";
-           }
-        }
-        switch (browser)
+        switch(environment)
         {
-            case "chrome":
-                System.setProperty("webdriver.chrome.driver", configReader.getChromeDriverPath());
-                driver = new ChromeDriver();
+            case "local":
+                driver = configDrivers.setBrowser();
                 break;
-            case "firefox":
-                System.setProperty("webdriver.gecko.driver", configReader.getFirefoxDriverPath());
-                driver = new FirefoxDriver();
-                break;
-            case "safari":
-                driver = new SafariDriver();
+            case "sauselabs":
+                ConfigSaucelabs configSaucelabs = new ConfigSaucelabs();
+                driver = configSaucelabs.setSaucelabsDriver();
                 break;
             default:
-                driver = new ChromeDriver();
-                System.setProperty("webdriver.chrome.driver", configReader.getChromeDriverPath());
+                driver = configDrivers.setBrowser();
                 break;
         }
-        driver.manage().window().maximize();
         pageLoadingWait(10);
-        asynchronusScript(10);
         driver.get(configReader.getUrl());
-
+        driver.manage().window().maximize();
     }
+
 
     @Attachment(value = "{0}", type = "image/png")
     public byte[] saveScreenshot(byte[] screenShot) {

@@ -26,5 +26,5 @@ Feature: Departments-menu feature
 
   Examples:
   | title        |
-  | Amazon Musicc |
+  | Amazon Music |
 #  | Prime Video  |
