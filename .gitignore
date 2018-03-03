@@ -12,3 +12,4 @@ test-output/
 *-all.xml
 doc/
 *.iml
+.idea/vcs.xml
