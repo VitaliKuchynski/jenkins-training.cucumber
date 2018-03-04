@@ -16,7 +16,6 @@ public class DepartmentsSD {
 
     @Given("^I am on Amazon home page$")
     public void imOnHomepage() {
-        pageLoadingWait(5);
         Assert.assertEquals(SharedSD.getDriver().getTitle(), "Amazon.com: Online Shopping for Electronics, Apparel, Computers, Books, DVDs & more");
     }
 
