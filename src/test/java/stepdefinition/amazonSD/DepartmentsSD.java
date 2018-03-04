@@ -7,6 +7,8 @@ import framework.amazon.HomePage;
 import org.testng.Assert;
 import stepdefinition.SharedSD;
 
+import static framework.BasePage.pageLoadingWait;
+
 public class DepartmentsSD {
 
     HomePage homePage = new HomePage();
@@ -14,6 +16,7 @@ public class DepartmentsSD {
 
     @Given("^I am on Amazon home page$")
     public void imOnHomepage() {
+        pageLoadingWait(5);
         Assert.assertEquals(SharedSD.getDriver().getTitle(), "Amazon.com: Online Shopping for Electronics, Apparel, Computers, Books, DVDs & more");
     }
 
