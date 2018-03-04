@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
     @RunWith(Cucumber.class)
     @CucumberOptions(
             // This creates cucumber reports
-            plugin = {"pretty", "html:target/site/cucumber-pretty"},
+            plugin = {"pretty", "html:target/site/cucumber-pretty","json:target/site/cucumber-pretty/cucumber.json"},
             //This create auto method name in camelCase
             snippets = cucumber.api.SnippetType.CAMELCASE,
 
