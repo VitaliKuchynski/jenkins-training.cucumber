@@ -1,129 +1,98 @@
 package framework;
 
-
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import stepdefinition.SharedSD;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+
 public class BasePage {
+    //Gets title of page
+    public String getTitle(){
+        return SharedSD.getDriver().getTitle();
+    }
 
-    //Navigates to any locations
+
+    //Clicks on element
     public void clickOn(By locator) {
-        webDriverFluentWait(locator).click();
+        findAndWaitOfWebElement(locator).click();
     }
 
-
-    //Scroll on the page
-    public static void scrollOnThePage() throws InterruptedException {
-        Thread.sleep(3000);
-        JavascriptExecutor js = (JavascriptExecutor) SharedSD.getDriver();
-        //Vertical scroll down 150 pixels
-        js.executeScript("window.scrollBy(0,150)");
-        Thread.sleep(10000);
-    }
-
-    //Gets element and inputs value
-    public void inputValue(By locator, String text) {
-        try {
-            SharedSD.getDriver().findElement(locator).sendKeys(text);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Screen shot should be taken");
-        }
-
-    }
-
-    //Wait, Gets radio-button and check it
-    public void checkRadioButton(By locator) {
-        webDriverFluentWait(locator).click();
-
+    //Finds element and enters text
+    public void sendText(By locator, String text) {
+        findAndWaitOfWebElement(locator).sendKeys(text);
     }
 
     //Gets element ant returns string value
-    public String getText(By locator) {
-        return SharedSD.getDriver().findElement(locator).getText();
+    public String getTextFromElement(By locator) {
+        return findAndWaitOfWebElement(locator).getText();
+    }
+
+    //Waits, Gets radio-button and check it
+    public void checkRadioButton(By locator) {
+        findAndWaitOfWebElement(locator).click();
     }
 
     //Checks if element is selected
-    public boolean isRadioButtonSelected(By locator) {
-        boolean isSelectedResult = false;
-        try {
-            isSelectedResult = SharedSD.getDriver().findElement(locator).isSelected();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Screen shot should be taken");
-
-        }
-        return isSelectedResult; /// it should be final ?
+    public boolean isElementSelected(By locator) {
+        boolean isSelectedResult = findAndWaitOfWebElement(locator).isSelected();
+        return isSelectedResult;
 
     }
 
     //Checks if element is displayed
-    public boolean isRadioButtonDisplayed(By locator) {
-        boolean isDisplayedResult = false;
-        try {
-            isDisplayedResult = SharedSD.getDriver().findElement(locator).isDisplayed();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Screen shot should be taken");
-
-        }
+    public boolean isElementDisplayed(By locator) {
+        boolean isDisplayedResult = findAndWaitOfWebElement(locator).isDisplayed();
         return isDisplayedResult;
     }
 
     //Checks if element is enabled
-    public boolean isRadioButtonEnabled(By locator) {
-        boolean isEnabledResult = false;
-        try {
-            isEnabledResult = SharedSD.getDriver().findElement(locator).isEnabled();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Screen shot should be taken");
-
-        }
-        return isEnabledResult;
+    public boolean isElementEnabled(By locator) {
+        boolean isEnabledResult = findAndWaitOfWebElement(locator).isEnabled();
+        return  isEnabledResult;
     }
 
-    //Selects value from drop-down list
-    public void selectDropdownListValue(Select dropDownValue, String value) {
-        try {
-            dropDownValue.selectByVisibleText(value);
-            Thread.sleep(5000);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Screen shot should be taken");
-
-        }
-    }
-
-    //Selects value from drop-down list by index
-    public void selectDropdownListValue(Select dropDownValue, int index) {
-        try {
-            dropDownValue.selectByIndex(index);
-            Thread.sleep(5000);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Screen shot should be taken");
-
-        }
-    }
+//    //Selects value from drop-down list
+//    public void selectDropdownListValue(Select dropDownValue, String value) {
+//        try {
+//            dropDownValue.selectByVisibleText(value);
+//            Thread.sleep(5000);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("Screen shot should be taken");
+//
+//        }
+//    }
+//
+//    //Selects value from drop-down list by index
+//    public void selectDropdownListValue(Select dropDownValue, int index) {
+//        try {
+//            dropDownValue.selectByIndex(index);
+//            Thread.sleep(5000);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("Screen shot should be taken");
+//
+//        }
+//    }
 
     //Selects current dated from list of days
-    public void selectCurrentDate(List<WebElement> element) throws InterruptedException {
+    public void selectCurrentDate(List<WebElement> element)  {
         //Create formatter to date
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("d");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd");
         //Instance of date, gets current date
         Date date = new Date();
         //Converts date  format to the string format
@@ -133,7 +102,13 @@ public class BasePage {
             String expectedDay = day.getText();
             if (expectedDay.equals(currentDate)) {
                 day.click();
-                Thread.sleep(3000);
+
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 break;
             }
         }
@@ -148,13 +123,11 @@ public class BasePage {
     //Switches to main window
     public void switchToRootWindow() {
         List<String> listOfWindows = new ArrayList<>(SharedSD.getDriver().getWindowHandles());
-
         for (int i = 1; i < listOfWindows.size(); i++) {
             SharedSD.getDriver().switchTo().window(listOfWindows.get(i));
             SharedSD.getDriver().close();
         }
         SharedSD.getDriver().switchTo().window(listOfWindows.get(0));
-
     }
 
     //Accepts the alert
@@ -192,12 +165,11 @@ public class BasePage {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("There is no alert");
-
         }
     }
 
     //Enters text to the alert
-    public void sendKeysToAlert(By locator, String text) {
+    public void sendKeysToAlert(String text) {
         try {
             SharedSD.getDriver().switchTo().alert().sendKeys(text);
             Thread.sleep(3000);
@@ -246,12 +218,11 @@ public class BasePage {
 
     //Auto complete
     public void autoComplete(List<WebElement> list, String text) {
-
         for (WebElement ele : list) {
             if (ele.getText().contains(text)) {
                 ele.click();
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -259,101 +230,11 @@ public class BasePage {
             }
         }
     }
-
-    //Mouse-over an element
-    public static void mouseOverElement(By overLocator) throws InterruptedException {
-        WebElement element = SharedSD.getDriver().findElement(overLocator);
-        //Create action instance
-        Actions action = new Actions(SharedSD.getDriver());
-        action.moveToElement(element).build().perform();
-        Thread.sleep(3000);
-
-    }
-
-    public void clickOnBrowserBackArrow() {
-        SharedSD.getDriver().navigate().back();
-    }
-
-    public void clickOnBrowserForwardArrow() {
-        SharedSD.getDriver().navigate().forward();
-    }
-
-    public void refreshBrowser() {
-        SharedSD.getDriver().navigate().refresh();
-    }
-
-    /**
-     * Import from util Maven testNG
-     */
-
-    //Implicitly wait
-    public static void implicitlyWate(String url, By locator) {
-        SharedSD.getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        SharedSD.getDriver().get(url);
-        WebElement element = SharedSD.getDriver().findElement(locator);
-    }
-
-    //Fluent wait
-    public static WebElement webDriverFluentWait(final By locator) {
-        Wait<WebDriver> wait = new FluentWait<WebDriver>(SharedSD.getDriver())
-                .withTimeout(10, TimeUnit.SECONDS)
-                .pollingEvery(1, TimeUnit.SECONDS)
-                .ignoring(NoSuchElementException.class)
-                .ignoring(StaleElementReferenceException.class)
-                .ignoring(ElementNotFoundException.class)
-                .withMessage("Web driver waited,  element could not be found, Exception has been thrown ");
-
-        WebElement element = wait.until(new Function<WebDriver, WebElement>() {
-            public WebElement apply(WebDriver driver) {
-                return driver.findElement(locator);
-            }
-        });
-        return element;
-    }
-
-    //Expected waite, timeout 10 sec
-    public static void wateUntilElementClicable(By locator) {
-        WebDriverWait wait = new WebDriverWait(SharedSD.getDriver(), 10);
-        WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
-    }
-
-    //Waite until page loading
-    public static void pageLoadingWait(long timeInSecond) {
-        SharedSD.getDriver().manage().timeouts().pageLoadTimeout(timeInSecond, TimeUnit.SECONDS);
-    }
-
-    //Script timeout
-    public static void asynchronusScript(long timeInSecond) {
-        SharedSD.getDriver().manage().timeouts().setScriptTimeout(timeInSecond, TimeUnit.SECONDS);
-    }
-
-    //Click on element using js executor
-    public static void clickOnElemetByJs(By locator) throws InterruptedException {
-        WebElement element = SharedSD.getDriver().findElement(locator);
-        JavascriptExecutor js = (JavascriptExecutor) SharedSD.getDriver();
-        js.executeScript("argument[0].click();", element);
-        Thread.sleep(5000);
-    }
-
-
-    //Set driver browser window
-    public static void setCromeBrowserWindow() {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("window-size=800,480");
-
-        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-
-        //Opens browser window with set size;
-        WebDriver driver = new ChromeDriver(capabilities);
-    }
-
-    //Looks for specified element in the list
-    public void lookForElement(List<WebElement> list, String text) {
-        System.out.println(list.size());
+    //Click on element from the list
+    public void selectOnElementFromList(List<WebElement> list, String text) {
         for (WebElement ele : list) {
-            if (ele.getText().contains(text)) {
-                System.out.println("Element is presented: " + text);
+            if (ele.getText().equalsIgnoreCase(text)) {
+                ele.click();
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
@@ -369,13 +250,140 @@ public class BasePage {
         boolean isFound = false;
         for (WebElement ele : list) {
             if (ele.getText().contentEquals(text)) {
+                System.out.println("Element is presented: " + text);
                 isFound = true;
                 break;
-            } else {
             }
         }
-        System.out.println("Element is on the list: " + isFound);
         return isFound;
     }
 
+
+    //Hovers over element
+    public static void mouseOverElement(By overLocator) throws InterruptedException {
+        WebElement element = findAndWaitOfWebElement(overLocator);
+        //Create action instance
+        Actions action = new Actions(SharedSD.getDriver());
+        action.moveToElement(element).build().perform();
+        Thread.sleep(5000);
+
+    }
+
+    public void clickOnBrowserBackArrow() {
+        SharedSD.getDriver().navigate().back();
+    }
+
+    public void clickOnBrowserForwardArrow() {
+        SharedSD.getDriver().navigate().forward();
+    }
+
+    public void refreshBrowser() {
+        SharedSD.getDriver().navigate().refresh();
+    }
+
+    //Scroll on the page
+    public static void scrollOnThePage() throws InterruptedException {
+        Thread.sleep(3000);
+        JavascriptExecutor js = (JavascriptExecutor) SharedSD.getDriver();
+        //Vertical scroll down 150 pixels
+        js.executeScript("window.scrollBy(0,150)");
+        Thread.sleep(10000);
+    }
+
+    /**
+     * Wait block
+     */
+
+    //Implicitly wait
+    public static WebElement implicitlyWaite(String url, By locator, int waitingTime) {
+        SharedSD.getDriver().manage().timeouts().implicitlyWait(waitingTime, TimeUnit.SECONDS);
+        SharedSD.getDriver().get(url);
+        WebElement element = SharedSD.getDriver().findElement(locator);
+        return element;
+    }
+
+    //Finds and return web element and wait certain time during process
+    public static WebElement findAndWaitOfWebElement(final By locator) {
+        Wait<WebDriver> wait = new FluentWait<WebDriver>(SharedSD.getDriver())
+                .withTimeout(15, TimeUnit.SECONDS)
+                .pollingEvery(1, TimeUnit.SECONDS)
+                .ignoring(NoSuchElementException.class)
+                .ignoring(StaleElementReferenceException.class)
+                .ignoring(ElementNotFoundException.class)
+                .ignoring(java.util.NoSuchElementException.class)
+                .withMessage(" Web driver waited,  element could not be found, Exception has been thrown");
+
+        WebElement element = wait.until(new Function<WebDriver,WebElement>() {
+            public WebElement apply(WebDriver driver) {
+                return driver.findElement(locator);
+            }
+        });
+        return element;
+    }
+
+    //Finds list of web element and wait certain time during process
+    public static List <WebElement> findAndWaitOfWebElements(final By locator) {
+        Wait<WebDriver> wait = new FluentWait<WebDriver>(SharedSD.getDriver())
+                .withTimeout(10, TimeUnit.SECONDS)
+                .pollingEvery(1, TimeUnit.SECONDS)
+                .ignoring(NoSuchElementException.class)
+                .ignoring(StaleElementReferenceException.class)
+                .ignoring(ElementNotFoundException.class)
+                .ignoring(java.util.NoSuchElementException.class)
+                .withMessage(" Web driver waited,  element could not be found, Exception has been thrown");
+
+        List <WebElement> elements = wait.until(new Function<WebDriver,List<WebElement>>() {
+            public List<WebElement> apply(WebDriver driver) {
+                return driver.findElements(locator);
+            }
+        });
+        return elements;
+    }
+
+    //Expected waite, timeout 10 sec
+    public static void wateUntilElementClicable(By locator, int seconds) {
+        WebDriverWait wait = new WebDriverWait(SharedSD.getDriver(), seconds);
+        WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
+    }
+
+    //Waite until page loading
+    public static void pageLoadingWait(long timeInSecond) {
+        SharedSD.getDriver().manage().timeouts().pageLoadTimeout(timeInSecond, TimeUnit.SECONDS);
+    }
+
+    //Script timeout
+    public static void asynchronusScript(int timeInSecond) {
+        SharedSD.getDriver().manage().timeouts().setScriptTimeout(timeInSecond, TimeUnit.SECONDS);
+    }
+
+    //Expected waite, timeout 10 sec
+    public static void wateUntilElementPresent(By locator, int seconds) {
+        WebDriverWait wait = new WebDriverWait(SharedSD.getDriver(), seconds);
+        WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
+    //Click on element using js executor
+    public static void clickOnElementByJs(By locator) throws InterruptedException {
+        WebElement element = findAndWaitOfWebElement(locator);
+        JavascriptExecutor js = (JavascriptExecutor) SharedSD.getDriver();
+        js.executeScript("arguments[0].click();", element);
+        Thread.sleep(3000);
+    }
+
+
+    //Sets driver browser window
+    public static void setChromeBrowserWindow() {
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("window-size=800,480");
+        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+        //Opens browser window with set size;
+        WebDriver driver = new ChromeDriver(capabilities);
+    }
+
+    //Sets driver browser window to full screen
+    public static void fullscreenWindow(){
+        SharedSD.getDriver().manage().window().maximize();
+
+    }
 }

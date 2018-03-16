@@ -13,9 +13,9 @@ import org.junit.runner.RunWith;
             snippets = cucumber.api.SnippetType.CAMELCASE,
 
             //Path to your feature file
-            features = {"src/test/resources/amazon"},
+            features = {"src/test/resources/hotels"},
             // Specify tags to be executed
-            tags = {"@departments-2"},  //Title of test cases which is going to be run
+            tags = {"@Hotels"},  //Title of test cases which is going to be run
             //Specify step definition package name (Note: make sure to have this package on current directory)
             glue = {"stepdefinition"}
     )

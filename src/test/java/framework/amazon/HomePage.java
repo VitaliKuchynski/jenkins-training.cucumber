@@ -40,7 +40,7 @@ public boolean navigateThroughListOfDepartment(String title){
         clickOn(accountsListLink);
     }
     public void enterEmail(String enterEmail) {
-        inputValue(emailTextField, enterEmail);
+        sendText(emailTextField, enterEmail);
     }
 
     public  void clickONContinueButton(){

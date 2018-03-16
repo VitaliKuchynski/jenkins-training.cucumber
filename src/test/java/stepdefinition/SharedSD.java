@@ -45,7 +45,6 @@ public class SharedSD {
                 driver = configDrivers.setBrowser();
                 break;
         }
-        pageLoadingWait(10);
         driver.get(configReader.getUrl());
         driver.manage().window().maximize();
     }
