@@ -233,7 +233,7 @@ public class BasePage {
     //Click on element from the list
     public void selectOnElementFromList(List<WebElement> list, String text) {
         for (WebElement ele : list) {
-            if (ele.getText().equalsIgnoreCase(text)) {
+            if (ele.getText().trim().equalsIgnoreCase(text)) {
                 ele.click();
                 try {
                     Thread.sleep(3000);
@@ -252,8 +252,7 @@ public class BasePage {
             if (ele.getText().contentEquals(text)) {
                 System.out.println("Element is presented: " + text);
                 isFound = true;
-                break;
-            }
+            }else  break;
         }
         return isFound;
     }
@@ -341,7 +340,7 @@ public class BasePage {
     }
 
     //Expected waite, timeout 10 sec
-    public static void wateUntilElementClicable(By locator, int seconds) {
+    public static void waitUntilElementClickable(By locator, int seconds) {
         WebDriverWait wait = new WebDriverWait(SharedSD.getDriver(), seconds);
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
     }

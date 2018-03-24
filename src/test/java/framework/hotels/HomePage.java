@@ -58,6 +58,7 @@ public class HomePage extends BasePage {
     private By searchResultNightsDetails = By.xpath(".//div[@class='dates-occupancy']/descendant::span[position()=2]");
     //Initialise variable, assigns dates details search
     private By searchResultDatesDetails = By.xpath(".//div[@class='dates-occupancy']/descendant::span[position()=1]");
+    private By packagesMemoLink = By.id("hdr-packages");
     //Initialise collection days year
     private List<WebElement> listYearDays;
     //Initialise collection list of rooms options
@@ -68,6 +69,12 @@ public class HomePage extends BasePage {
     private Date checkOutDate = null;
     //Initialise variable and assign period between check in out dates
     private String checkInOutPeriodResult = null;
+
+    //Click on Packages in navigation menu
+    public void clickOnPackagesLink(){
+        clickOn(packagesMemoLink);
+    }
+
     //Getters for period of time between check in/out
     public String getCheckInOutPeriodResult() {
         return checkInOutPeriodResult;
