@@ -129,4 +129,26 @@ public class PackagesPageSD {
 
     }
 
+    @And("^I check (.+) check box$")
+    public void checkAirlinesCheckbox(String airline){
+        packagesPage.checkAirlineCheckbox(airline);
+    }
+    @And("^I select (.+) from dropdown$")
+    public void selectPriceValue(String value){
+        packagesPage.selectValueFromSortList(value);
+    }
+    @Then("^I verify (airlines|price) is displayed correctly$")
+    public void iVerifyAirlinesIsDisplayedCorrectly(String field) {
+        switch (field) {
+            case "airline":
+
+                break;
+            case "price":
+    Assert.assertEquals(true,packagesPage.isPricesSortedCorrectly());
+                break;
+        }
+    }
+
+
+
 }

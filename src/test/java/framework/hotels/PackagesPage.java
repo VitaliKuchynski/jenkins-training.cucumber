@@ -4,6 +4,7 @@ import framework.BasePage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PackagesPage extends BasePage{
@@ -54,8 +55,21 @@ public class PackagesPage extends BasePage{
     private By actualReturnDepartureDays= By.xpath(".//div[@class='flight-information']/descendant::span[position()=1]");
    //Initialise variable, assigns actual passengers value
     private By actualPassengerValue = By.xpath(".//div[@class='product-description']");
-    //Collections of actualDates
-    List<WebElement> actualDates;
+    //Initialise locator to airlines check box
+    private By airlinesCheckboxes = By.xpath(".//fieldset[@id='airlines']/descendant::input");
+    //Initialise variable and store sort-dropdown locator
+    private By sortDropDown = By.name("sort");
+    //Initialise variable, assigns sort dropdown options locators
+    private By sortDropdownOptions = By.xpath(".//*[@name='sort']/descendant::option");
+    //Initialise variable, assigns locator of airlines names
+    private By actualAirlinesAfterSearch = By.xpath("//div[@id='flight-listing-container']/descendant::span[@data-test-id='airline-name']");
+    //Initialise variable, assigns locator of prices
+    private By actualPrices = By.xpath("//div[@id='flight-listing-container']/descendant::span[@data-test-id='listing-price-dollars']");
+     //Collections of actualDates
+    private List<WebElement> actualDates;
+    //Collection of prises after search
+    private  ArrayList<Integer> pricesSortedInInt = new ArrayList<>();
+    private List<WebElement> listOfSortingOptions;
     public String actualDepartureMonth;
     public String actualDepartureDate;
     public String expectedStopsNumber;
@@ -83,14 +97,14 @@ public class PackagesPage extends BasePage{
     public void enterFlightFromCity(String city) throws InterruptedException {
         sendText(flightFromField,city);
         //Gets list of suggested airports and assigns it to List collection
-//        List<WebElement> listOfCityAirports =  findAndWaitOfWebElements(autoSuggestionAirports);
+//        List<WebElement> listOfCityAirports =  findAndWaitOfWebElements(autoSuggestionAirports);//
 //        Thread.sleep(3000);
 //        autoComplete(listOfCityAirports,city);
     }
     //Sends text to flight to airport
     public void enterFlightToCity(String city) throws InterruptedException {
         sendText(flightToField,city);
-        Thread.sleep(3000);
+        Thread.sleep(5000);
         //Gets list of suggested airports and assigns it to List collection
         List<WebElement> listOfArrivalsCityAborts =  findAndWaitOfWebElements(autoSuggestionAirports);
         autoComplete(listOfArrivalsCityAborts,city);
@@ -149,6 +163,7 @@ public class PackagesPage extends BasePage{
     public void checkNonStopCheckBox(){
         clickOn(nonStopCheckBox);
         try {
+            Thread.sleep(5000);
             expectedStopsNumber = findAndWaitOfWebElement(nonStopCheckBox).getAttribute("data-test-id");
         } catch (Exception e) {
             e.printStackTrace();
@@ -157,7 +172,7 @@ public class PackagesPage extends BasePage{
     }
     //Selects first flights
     public void selectFirstFlightFromList(){
-        wateUntilElementClicable(firstSelectButton,30);
+        waitUntilElementClickable(firstSelectButton,40);
         clickOn(firstSelectButton);
     }
 //    public void clickOnNoThanksLink(){
@@ -197,6 +212,49 @@ public class PackagesPage extends BasePage{
     public String getActualAdultsPassengers(){
         return getTextFromElement(actualPassengerValue).substring(11);
     }
-
+    //Checks airlines check box
+    public void checkAirlineCheckbox(String airlines){
+        waitUntilElementClickable(airlinesCheckboxes,20);
+        List<WebElement> listOfAirlinesCheckboxes = findAndWaitOfWebElements(airlinesCheckboxes);
+        for(WebElement ele: listOfAirlinesCheckboxes){
+            System.out.println(ele.getAttribute("data-test-id"));
+            if(ele.getAttribute("data-test-id").equalsIgnoreCase(airlines)){
+                ele.click();
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.getMessage();
+                }
+                break;
+            }
+        }
+    }
+    //Clicks on Sort dropdown on search page
+    public void clickOnSortDropDown(){
+        clickOn(sortDropDown);
+    }
+    //Selects value from sorting dropdown
+    public void selectValueFromSortList(String value){
+        clickOnSortDropDown();
+        listOfSortingOptions = findAndWaitOfWebElements(sortDropdownOptions);
+        selectOnElementFromList(listOfSortingOptions,value);
+    }
+    //Gets price in String convert to int
+     public void formatPriceStringToInt() {
+         List<WebElement> listOfPrices = findAndWaitOfWebElements(actualPrices);
+         for (WebElement ele : listOfPrices) {
+             pricesSortedInInt.add(Integer.parseInt(ele.getText().substring(1)));
+         }
+    }
+    //Compares that highest prise is first NEED TO BE REDEVELOPED
+    public boolean isPricesSortedCorrectly() {
+        formatPriceStringToInt();
+     if(pricesSortedInInt.get(0)>=pricesSortedInInt.get(1)){
+         return true;
+     }  else {
+         return false;
+        }
+    }
 }
+
 
