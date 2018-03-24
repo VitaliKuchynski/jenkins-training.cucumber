@@ -65,10 +65,15 @@ public class PackagesPage extends BasePage{
     private By actualAirlinesAfterSearch = By.xpath("//div[@id='flight-listing-container']/descendant::span[@data-test-id='airline-name']");
     //Initialise variable, assigns locator of prices
     private By actualPrices = By.xpath("//div[@id='flight-listing-container']/descendant::span[@data-test-id='listing-price-dollars']");
+    //Stores checked airline
+    private String expectedAirline;
      //Collections of actualDates
     private List<WebElement> actualDates;
     //Collection of prises after search
     private  ArrayList<Integer> pricesSortedInInt = new ArrayList<>();
+    //Collection of sorted Airlines on searching page
+    private List<WebElement> sortedListOfAirlines;
+    //Collection of options  from sorting dropdown
     private List<WebElement> listOfSortingOptions;
     public String actualDepartureMonth;
     public String actualDepartureDate;
@@ -161,9 +166,9 @@ public class PackagesPage extends BasePage{
     }
     //Checks on nonStopCheckBox
     public void checkNonStopCheckBox(){
+        waitUntilElementClickable(nonStopCheckBox,10);
         clickOn(nonStopCheckBox);
         try {
-            Thread.sleep(5000);
             expectedStopsNumber = findAndWaitOfWebElement(nonStopCheckBox).getAttribute("data-test-id");
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,7 +197,7 @@ public class PackagesPage extends BasePage{
     }
     //Gets text number of stops
     public boolean isActualExpectedTripStopsEqual(){
-       return getTextFromElement(actualTripStops).equalsIgnoreCase(expectedStopsNumber);
+        return getTextFromElement(actualTripStops).equalsIgnoreCase(expectedStopsNumber);
     }
     //Gets and returns actual Departure  date
     public String getActualDepartureDate(){
@@ -213,12 +218,13 @@ public class PackagesPage extends BasePage{
         return getTextFromElement(actualPassengerValue).substring(11);
     }
     //Checks airlines check box
-    public void checkAirlineCheckbox(String airlines){
+    public void checkAirlineCheckbox(String airline){
+        this.expectedAirline = airline;
         waitUntilElementClickable(airlinesCheckboxes,20);
         List<WebElement> listOfAirlinesCheckboxes = findAndWaitOfWebElements(airlinesCheckboxes);
         for(WebElement ele: listOfAirlinesCheckboxes){
             System.out.println(ele.getAttribute("data-test-id"));
-            if(ele.getAttribute("data-test-id").equalsIgnoreCase(airlines)){
+            if(ele.getAttribute("data-test-id").equalsIgnoreCase(airline)){
                 ele.click();
                 try {
                     Thread.sleep(5000);
@@ -228,6 +234,7 @@ public class PackagesPage extends BasePage{
                 break;
             }
         }
+        sortedListOfAirlines = findAndWaitOfWebElements(actualAirlinesAfterSearch);
     }
     //Clicks on Sort dropdown on search page
     public void clickOnSortDropDown(){
@@ -255,6 +262,12 @@ public class PackagesPage extends BasePage{
          return false;
         }
     }
+    public boolean isAirlinesDisplayCorrectly(){
+
+       return isElementInTheList(sortedListOfAirlines,expectedAirline);
+
+    }
+
 }
 
 
