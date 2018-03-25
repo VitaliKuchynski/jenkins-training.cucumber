@@ -7,6 +7,8 @@ import org.openqa.selenium.WebElement;
 import java.util.ArrayList;
 import java.util.List;
 
+import static util.Sleep.pause;
+
 public class PackagesPage extends BasePage{
     //Initialise variable and assigns expected title
     private String titlePackagesPage = "Vacation Packages: Find Cheap Trips, Deals & Vacations | Hotels.com";
@@ -28,8 +30,8 @@ public class PackagesPage extends BasePage{
     private By monthDatePicker = By.xpath(".//div[@class='']/descendant::caption[position()=1]");//?????
     //Initialise variable and assigns one month days
     private By daysOfMonth = By.xpath(".//div[@class='']/descendant::tbody[position()=1]/tr/td");//?????
-    //Initialise variable and assigns next month button
-    private By nextDepartureMonthButton = By.xpath("//div[@id='flight-departing-wrapper']/descendant::button[position()=3]");
+    //Initialise variable and assigns next departure month button
+    private By nextDepartureMonthButton = By.xpath(".//div[@id='flight-departing-wrapper']/descendant::button[position()=3]");
     //Initialise variable and assigns next month button
     private By nextReturningMonthButton = By.xpath("//div[@id='flight-returning-wrapper']/descendant::button[position()=3]");
     //Initialise variable and assigns adult passengers dropdown options
@@ -71,6 +73,7 @@ public class PackagesPage extends BasePage{
     private List<WebElement> actualDates;
     //Collection of prises after search
     private  ArrayList<Integer> pricesSortedInInt = new ArrayList<>();
+    private  ArrayList<Double> pricesSortedInDoble = new ArrayList<>();
     //Collection of sorted Airlines on searching page
     private List<WebElement> sortedListOfAirlines;
     //Collection of options  from sorting dropdown
@@ -127,15 +130,15 @@ public class PackagesPage extends BasePage{
          listOfDays = findAndWaitOfWebElements(currentNextMonthDates);
     }
     //Selects date from flight from / to
-    public void selectDate(String month, String expectedDate){
+    public void selectDepartureDate(String month, String expectedDate){
         actualDepartureMonth = month.substring(0,3);
         actualDepartureDate = expectedDate;
         String result= actualDepartureMonth + " " +actualDepartureDate;
         System.out.println(result);
-
         String firstMonth = findAndWaitOfWebElement(monthDatePicker).getText().trim();
+        try{
         while(!firstMonth.equalsIgnoreCase(month)){
-            clickOn(nextReturningMonthButton);
+            clickOn(nextDepartureMonthButton);
             firstMonth = findAndWaitOfWebElement(monthDatePicker).getText().trim();
         }
             if (firstMonth.equalsIgnoreCase(month)) {
@@ -146,8 +149,38 @@ public class PackagesPage extends BasePage{
                         break;
                     }
                 }
+
+            }
+        }catch (Exception ex){
+            ex.getMessage();
+            System.out.println("Dates should be changed!!");
+        }
+    }
+    public void selectReturningDate(String month, String expectedDate){
+        actualDepartureMonth = month.substring(0,3);
+        actualDepartureDate = expectedDate;
+        String result= actualDepartureMonth + " " +actualDepartureDate;
+        System.out.println(result);
+        String firstMonth = findAndWaitOfWebElement(monthDatePicker).getText().trim();
+        try{
+        while(!firstMonth.equalsIgnoreCase(month)){
+            clickOn(nextReturningMonthButton);
+            firstMonth = findAndWaitOfWebElement(monthDatePicker).getText().trim();
+        }
+        if (firstMonth.equalsIgnoreCase(month)) {
+            List<WebElement> listOfDays= findAndWaitOfWebElements(daysOfMonth);
+            for (WebElement list : listOfDays) {
+                if (list.getText().equalsIgnoreCase(expectedDate)) {
+                    list.click();
+                    break;
+                }
             }
         }
+        }catch (Exception ex){
+            ex.getMessage();
+            System.out.println("Dates should be changed!!");
+        }
+    }
     //Clicks on search button
     public void clickOnAdultPassengerDropDown(){
         clickOn(adultPassengerDropDown);
@@ -165,8 +198,8 @@ public class PackagesPage extends BasePage{
         clickOn(searchButton);
     }
     //Checks on nonStopCheckBox
-    public void checkNonStopCheckBox(){
-        waitUntilElementClickable(nonStopCheckBox,10);
+    public void checkNonStopCheckBox() {
+       pageLoadingWait(10);
         clickOn(nonStopCheckBox);
         try {
             expectedStopsNumber = findAndWaitOfWebElement(nonStopCheckBox).getAttribute("data-test-id");
@@ -220,17 +253,13 @@ public class PackagesPage extends BasePage{
     //Checks airlines check box
     public void checkAirlineCheckbox(String airline){
         this.expectedAirline = airline;
-        waitUntilElementClickable(airlinesCheckboxes,20);
+        waitUntilElementClickable(airlinesCheckboxes,40);
         List<WebElement> listOfAirlinesCheckboxes = findAndWaitOfWebElements(airlinesCheckboxes);
         for(WebElement ele: listOfAirlinesCheckboxes){
             System.out.println(ele.getAttribute("data-test-id"));
             if(ele.getAttribute("data-test-id").equalsIgnoreCase(airline)){
                 ele.click();
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.getMessage();
-                }
+               pause(5000);
                 break;
             }
         }
@@ -244,6 +273,7 @@ public class PackagesPage extends BasePage{
     public void selectValueFromSortList(String value){
         clickOnSortDropDown();
         listOfSortingOptions = findAndWaitOfWebElements(sortDropdownOptions);
+        pause(5000);
         selectOnElementFromList(listOfSortingOptions,value);
     }
     //Gets price in String convert to int
@@ -251,7 +281,10 @@ public class PackagesPage extends BasePage{
          List<WebElement> listOfPrices = findAndWaitOfWebElements(actualPrices);
          for (WebElement ele : listOfPrices) {
              pricesSortedInInt.add(Integer.parseInt(ele.getText().substring(1)));
+             //parses string to double
+             pricesSortedInDoble.add(Double.parseDouble(ele.getText().substring(1)));
          }
+
     }
     //Compares that highest prise is first NEED TO BE REDEVELOPED
     public boolean isPricesSortedCorrectly() {
@@ -263,8 +296,7 @@ public class PackagesPage extends BasePage{
         }
     }
     public boolean isAirlinesDisplayCorrectly(){
-
-       return isElementInTheList(sortedListOfAirlines,expectedAirline);
+        return isElementInTheList(sortedListOfAirlines,expectedAirline);
 
     }
 

@@ -44,11 +44,11 @@ public class PackagesPageSD {
         switch (way) {
             case "departure":
                 packagesPage.clickOnDepartureDatePicker();
-                packagesPage.selectDate(month, date);
+                packagesPage.selectDepartureDate(month, date);
                 break;
             case "returning":
                 packagesPage.clickOnReturningDatePicker();
-                packagesPage.selectDate(month, date);
+                packagesPage.selectReturningDate(month, date);
                 break;
         }
     }
@@ -71,7 +71,7 @@ public class PackagesPageSD {
     }
 
     @And("^I select (departure|returning) nonstop trip$")
-    public void clickOnNonStopCheckbox(String airport) {
+    public void clickOnNonStopCheckbox(String airport) throws InterruptedException {
         switch (airport) {
             case "departure":
                 packagesPage.checkNonStopCheckBox();
@@ -141,7 +141,7 @@ public class PackagesPageSD {
     public void iVerifyAirlinesIsDisplayedCorrectly(String field) {
         switch (field) {
             case "airline":
-
+    Assert.assertEquals(true ,packagesPage.isAirlinesDisplayCorrectly());
                 break;
             case "price":
     Assert.assertEquals(true,packagesPage.isPricesSortedCorrectly());

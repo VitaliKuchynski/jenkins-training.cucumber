@@ -10,7 +10,7 @@ Feature: Flight search feature
     And   I enter <departure city/airport> into Flying from field
     And   I enter <arrival city/airport> into Flying to field
     And   I select 29 and Mar 2018 from departure date
-    And   I select 30 and May 2018 from returning date
+    And   I select 30 and Apr 2018 from returning date
     And   I select 2 adults passengers
     And   I click on search button
     And   I select departure nonstop trip
@@ -29,20 +29,21 @@ Feature: Flight search feature
       |departure city/airport                   |arrival city/airport|
       |New York, NY (JFK-John F. Kennedy Intl.) |  San Diego Intl.   |
 
-#  @Flight-filter-verification
-#  Scenario Outline: Verify filtering by price and flight company search
-#    When  I click on Flight only tab
-#    And   I enter <departure city/airport> into Flying from field
-#    And   I enter <arrival city/airport> into Flying to field
-#    And   I select 29 and Mar 2018 from departure date
-#    And   I select 30 and Mar 2018 from returning date
-#    And   I click on search button
-#    And   I check Jet blue airlines check box
-#    And   I select highest price from dropdown
-#    Then  I verify airlines is displayed correctly
-#    And   I verify price is displayed correctly
-#
-#
-#    Examples:
-#      |departure city/airport|arrival city/airport|
-#      |New York JFK          |  San Diego  Intl   |
+  @Flight-filter-verification
+  Scenario Outline: Verify filtering by price and flight company search
+    When  I click on Flight only tab
+    And   I enter <departure city/airport> into Flying from field
+    And   I enter <arrival city/airport> into Flying to field
+    And   I select 1 and Jun 2018 from departure date
+    And   I select 5 and Jun 2018 from returning date
+    And   I click on search button
+    And   I check <airlines> check box
+    And   I select departure nonstop trip
+    And   I select Price (Highest) from dropdown
+    Then  I verify airlines is displayed correctly
+    And   I verify price is displayed correctly
+
+
+    Examples:
+      |departure city/airport                    |arrival city/airport      |airlines  |
+      |New York, NY (JFK-John F. Kennedy Intl.)  |  San Diego  Intl. (SAN)  |Delta  |

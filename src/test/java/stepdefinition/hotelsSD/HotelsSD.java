@@ -94,7 +94,7 @@ public class HotelsSD {
                 Assert.assertEquals(homePage.getSearchResultText(result),actualRoomsPeopleResult);
                 break;
             case "nights":
-                String actualNightsResult = "6 nights";
+                String actualNightsResult = "2 nights";
                 Assert.assertEquals(homePage.getSearchResultText(result),actualNightsResult);
                 break;
         }

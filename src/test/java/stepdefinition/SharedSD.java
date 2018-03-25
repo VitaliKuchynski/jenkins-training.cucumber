@@ -59,7 +59,7 @@ public class SharedSD {
     public void actionsAfterScenario(Scenario scenario){
         //Verifies if the scenario fails and make a screenshot
         if (scenario.isFailed()) {
-            //Takes screenshot to cucumber report
+            //Takes screenshot to allure report
             saveScreenshot(((TakesScreenshot)driver).getScreenshotAs(OutputType.BYTES));
         }
         driver.quit();

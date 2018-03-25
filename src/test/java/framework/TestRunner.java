@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
             //Path to your feature file
             features = {"src/test/resources/hotels"},
             // Specify tags to be executed
-            tags = {"@Hotels"},  //Title of test cases which is going to be run
+            tags = {"@Flight-filter-verification"},  //Title of test cases which is going to be run
             //Specify step definition package name (Note: make sure to have this package on current directory)
             glue = {"stepdefinition"}
     )

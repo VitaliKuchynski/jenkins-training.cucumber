@@ -106,7 +106,7 @@ public class HomePage extends BasePage {
     }
     //Gets days from calendar and assigns to collection
     public void setListYearDays(){
-        this.listYearDays = SharedSD.getDriver().findElements(By.xpath(".//div[@class='widget-datepicker-bd']/descendant::td"));
+        this.listYearDays = SharedSD.getDriver().findElements(By.xpath(".//div[@class='widget-datepicker-bd']/descendant::td/a"));
     }
     //Clicks on Check in label
     public void clickOnCheckInField(){
@@ -141,7 +141,7 @@ public class HomePage extends BasePage {
         Calendar calendar = Calendar.getInstance();
         //Sets current date
         calendar.setTime(new Date());
-        calendar.add(Calendar.DATE, 7);
+        calendar.add(Calendar.DATE, 3);
         checkOutDate = calendar.getTime();
         String expectedDate =  format.format(checkOutDate);
         for(WebElement list: listYearDays){
