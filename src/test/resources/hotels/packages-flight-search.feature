@@ -1,4 +1,4 @@
-@Hotels
+@Hotels @Regression
 Feature: Flight search feature
 
   Background:
@@ -9,8 +9,8 @@ Feature: Flight search feature
     When  I click on Flight only tab
     And   I enter <departure city/airport> into Flying from field
     And   I enter <arrival city/airport> into Flying to field
-    And   I select 29 and Mar 2018 from departure date
-    And   I select 30 and Apr 2018 from returning date
+    And   I select 29 and Jul 2018 from departure date
+    And   I select 30 and Aug 2018 from returning date
     And   I select 2 adults passengers
     And   I click on search button
     And   I select departure nonstop trip

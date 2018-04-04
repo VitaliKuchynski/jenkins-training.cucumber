@@ -1,4 +1,4 @@
-@Hotels
+@Hotels @Regression
 Feature: Hotels search future
 
   Background:

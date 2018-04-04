@@ -7,6 +7,8 @@ import cucumber.api.java.en.When;
 import framework.hotels.HomePage;
 import org.testng.Assert;
 
+import static util.Sleep.pause;
+
 
 public class HotelsSD {
     HomePage homePage = new HomePage();
@@ -94,7 +96,7 @@ public class HotelsSD {
                 Assert.assertEquals(homePage.getSearchResultText(result),actualRoomsPeopleResult);
                 break;
             case "nights":
-                String actualNightsResult = "2 nights";
+                String actualNightsResult = "7 nights";
                 Assert.assertEquals(homePage.getSearchResultText(result),actualNightsResult);
                 break;
         }

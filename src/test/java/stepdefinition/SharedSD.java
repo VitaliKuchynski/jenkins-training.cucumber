@@ -61,6 +61,8 @@ public class SharedSD {
         if (scenario.isFailed()) {
             //Takes screenshot to allure report
             saveScreenshot(((TakesScreenshot)driver).getScreenshotAs(OutputType.BYTES));
+            //Takes screenshot to cucumber report
+            scenario.embed(((TakesScreenshot)driver).getScreenshotAs(OutputType.BYTES), "image/png");
         }
         driver.quit();
     }

@@ -199,7 +199,8 @@ public class PackagesPage extends BasePage{
     }
     //Checks on nonStopCheckBox
     public void checkNonStopCheckBox() {
-       pageLoadingWait(10);
+       // waitUntilElementClickable(nonStopCheckBox,40);
+       pageLoadingWait(40);
         clickOn(nonStopCheckBox);
         try {
             expectedStopsNumber = findAndWaitOfWebElement(nonStopCheckBox).getAttribute("data-test-id");

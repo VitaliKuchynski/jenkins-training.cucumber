@@ -58,7 +58,10 @@ public class HomePage extends BasePage {
     private By searchResultNightsDetails = By.xpath(".//div[@class='dates-occupancy']/descendant::span[position()=2]");
     //Initialise variable, assigns dates details search
     private By searchResultDatesDetails = By.xpath(".//div[@class='dates-occupancy']/descendant::span[position()=1]");
-    private By packagesMemoLink = By.id("hdr-packages");
+    //Menu link packages
+    private By packagesMenuLink = By.id("hdr-packages");
+    //Next month button
+    private By nextMonthButton = By.xpath("//html//div[2]/div[1]/button[2]");
     //Initialise collection days year
     private List<WebElement> listYearDays;
     //Initialise collection list of rooms options
@@ -72,7 +75,7 @@ public class HomePage extends BasePage {
 
     //Click on Packages in navigation menu
     public void clickOnPackagesLink(){
-        clickOn(packagesMemoLink);
+        clickOn(packagesMenuLink);
     }
 
     //Getters for period of time between check in/out
@@ -106,7 +109,7 @@ public class HomePage extends BasePage {
     }
     //Gets days from calendar and assigns to collection
     public void setListYearDays(){
-        this.listYearDays = SharedSD.getDriver().findElements(By.xpath(".//div[@class='widget-datepicker-bd']/descendant::td/a"));
+        this.listYearDays = SharedSD.getDriver().findElements(By.xpath("//div[@class='widget-daterange-cont']/descendant::div[position()=1]/descendant::div[position()=3]/descendant::td"));
     }
     //Clicks on Check in label
     public void clickOnCheckInField(){
@@ -118,7 +121,7 @@ public class HomePage extends BasePage {
         clickOnCheckInField();
         setListYearDays();
         //selectCurrentDate(listYearDays);
-        SimpleDateFormat format = new SimpleDateFormat("dd");
+        SimpleDateFormat format = new SimpleDateFormat("d");
         //Instance of calendar
         Calendar calendar = Calendar.getInstance();
         //Sets current date
@@ -134,26 +137,41 @@ public class HomePage extends BasePage {
         }
     }
     //Selects Check out date
-    public void selectCheckOutDate(){
+    public void selectCheckOutDate() {
         clickOn(checkOutField);
-        SimpleDateFormat format = new SimpleDateFormat("dd");
+        SimpleDateFormat format = new SimpleDateFormat("d");
         //Instance of calendar
         Calendar calendar = Calendar.getInstance();
         //Sets current date
         calendar.setTime(new Date());
-        calendar.add(Calendar.DATE, 3);
+        int currentDate = Integer.parseInt(format.format(calendar.getTime()));
+        calendar.add(Calendar.DATE, 8);
         checkOutDate = calendar.getTime();
-        String expectedDate =  format.format(checkOutDate);
-        for(WebElement list: listYearDays){
-            if(list.getText().equals(expectedDate)){
-                list.click();
-                break;
+        String expectedDate = format.format(checkOutDate);
+        int checkOutDateInt = Integer.parseInt(expectedDate);
+
+        if(checkOutDateInt<currentDate) {
+            try {
+                clickOnElementByJs(nextMonthButton);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (WebElement list : listYearDays) {
+                if (list.getText().contains(expectedDate)) {
+                    list.click();
+                    break;
+                }
+            }
+        }else {
+            for (WebElement list : listYearDays) {
+                if (list.getText().contains(expectedDate)) {
+                    list.click();
+                    break;
+                }
             }
         }
         //Sets period of between check in check out dates and returns it in string format based on check out date
         setCheckInOutDatesPeriod();
-        System.out.println(checkInOutPeriodResult);
-
     }
     //Sets period between check in check out and converts it in string format based on month
     public String setCheckInOutDatesPeriod(){
@@ -162,14 +180,14 @@ public class HomePage extends BasePage {
         String checkOutMonth = convert.format(checkOutDate);
         //if statement compare months
         if(currentMonth.equalsIgnoreCase(checkOutMonth)){
-            SimpleDateFormat formatter1 = new SimpleDateFormat("EEE dd");
-            SimpleDateFormat formatter2 = new SimpleDateFormat("EEE dd MMMMM YYYY");
+            SimpleDateFormat formatter1 = new SimpleDateFormat("EEE d");
+            SimpleDateFormat formatter2 = new SimpleDateFormat("EEE d MMMMM YYYY");
             String checkInDateResult = formatter1.format(checkInDate);
             String checkOutDateResult = formatter2.format(checkOutDate);
             checkInOutPeriodResult = checkInDateResult +" - "+ checkOutDateResult;
         }else {
-            SimpleDateFormat formatter1 = new SimpleDateFormat("EEE dd MMMMM");
-            SimpleDateFormat formatter2 = new SimpleDateFormat("EEE dd MMMMM YYYY");
+            SimpleDateFormat formatter1 = new SimpleDateFormat("EEE d MMMMM");
+            SimpleDateFormat formatter2 = new SimpleDateFormat("EEE d MMMMM YYYY");
             String checkInDateResult = formatter1.format(checkInDate);
             String checkOutDateResult = formatter2.format(checkOutDate);
             checkInOutPeriodResult = checkInDateResult +" - "+ checkOutDateResult;
