@@ -17,7 +17,7 @@ public class ConfigSaucelabs {
     public static final String URLSAUSLABS = "https://" + USERNAME + ":" + ACCESS_KEY + "@ondemand.saucelabs.com:443/wd/hub";
 
     public WebDriver setSaucelabsDriver() throws MalformedURLException {
-        //Sets capabilities to remote sauselabs driver
+        //Sets capabilities to remote sauceLabs driver
         DesiredCapabilities caps = DesiredCapabilities.chrome();
         caps.setCapability("platform", "Windows 10");
         caps.setCapability("version", "31.0");

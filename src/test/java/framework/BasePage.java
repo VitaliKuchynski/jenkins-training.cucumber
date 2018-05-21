@@ -13,6 +13,8 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import stepdefinition.SharedSD;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -384,5 +386,45 @@ public class BasePage {
     public static void fullscreenWindow(){
         SharedSD.getDriver().manage().window().maximize();
 
+    }
+
+    //Checks broken links
+    public void checkLincks(By locator){
+
+        List <WebElement> allLinks = SharedSD.getDriver().findElements(locator);
+
+        for(int i=0;i<allLinks.size();i++)
+        {
+
+            WebElement ele= allLinks.get(i);
+            String url=ele.getAttribute("href");
+            verifyLinkActive(url);
+        }
+    }
+    //Checks broken links and prints result
+    public static void verifyLinkActive(String linkUrl)
+    {
+        try
+
+        {
+            URL url = new URL(linkUrl);
+
+            HttpURLConnection httpURLConnect=(HttpURLConnection)url.openConnection();
+
+            httpURLConnect.setConnectTimeout(3000);
+
+            httpURLConnect.connect();
+
+            if(httpURLConnect.getResponseCode()==200)
+            {
+                System.out.println(linkUrl+" - "+httpURLConnect.getResponseMessage());
+            }
+            if(httpURLConnect.getResponseCode()==HttpURLConnection.HTTP_NOT_FOUND)
+            {
+                System.out.println(linkUrl+" - "+httpURLConnect.getResponseMessage() + " - "+ HttpURLConnection.HTTP_NOT_FOUND);
+            }
+        } catch (Exception e) {
+
+        }
     }
 }
